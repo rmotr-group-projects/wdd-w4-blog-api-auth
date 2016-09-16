@@ -17,7 +17,7 @@ class UserTestCase(APITestCase):
             secretkey='b' * 32)
 
     def test_list(self):
-        """Should return a list of all authors when user is authenticated"""
+        """Should return a list of all users when user is authenticated"""
         expected = {
             'count': 1,
             'next': None,
@@ -84,7 +84,7 @@ class UserTestCase(APITestCase):
         self.assertEqual(response.json(), expected)
 
     def test_detail_not_found_id(self):
-        """Should return 404 when author when given id does not exist"""
+        """Should return 404 when given id does not exist"""
         params = {'accesskey': self.user.accesskey}
         response = self.client.get('/api/users/{}'.format('foobar'), params)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -168,7 +168,7 @@ class UserTestCase(APITestCase):
         self.assertEqual(response.json(), expected)
 
     def test_full_update(self):
-        """Should full update an author when given data is valid"""
+        """Should full update an user when given data is valid"""
         payload = {
             'username': 'lpage',
             'first_name': 'Larry',

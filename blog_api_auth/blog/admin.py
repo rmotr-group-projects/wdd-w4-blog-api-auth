@@ -9,7 +9,7 @@ class BlogAdmin(admin.ModelAdmin):
 
 
 @admin.register(User)
-class AuthorAdmin(admin.ModelAdmin):
+class UserAdmin(admin.ModelAdmin):
     list_display = ('id', 'username', 'accesskey', 'is_active')
     search_fields = ('id', 'username')
 
