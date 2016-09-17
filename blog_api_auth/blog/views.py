@@ -23,11 +23,21 @@ class UserViewSet(mixins.RetrieveModelMixin,
 
     def update(self, request, *args, **kwargs):
         # you will probably do some custom actions about the `password` here
-        pass
+        payload = request.POST
+        if 'password' in payload:
+            payload['password'] = make_password(payload['password'])
+        request.user.update(**payload)
+        content = {'status': 'request was permitted'}
+        return Response(content)
 
     def create(self, request, *args, **kwargs):
         # you will probably do some custom actions about the `password` here
-        pass
+        payload = request.POST
+        if 'password' in payload:
+            payload['password'] = make_password(payload['password'])
+        request.user.create(**payload)
+        content = {'status': 'request was permitted'}
+        return Response(content)
 
 
 class BlogViewSet(mixins.RetrieveModelMixin,
@@ -57,3 +67,4 @@ class EntryViewSet(mixins.RetrieveModelMixin,
     search_fields = ('headline',)
     ordering_fields = ('id',)
     # configure the custom permission class here
+    permission_classes = (IsOwnerOrReadOnly,)
