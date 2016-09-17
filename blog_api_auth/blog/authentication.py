@@ -20,7 +20,7 @@ class UserAccesskeyAuthentication(authentication.BaseAuthentication):
             return user, 'accesskey'
         except:
             raise exceptions.AuthenticationFailed('Invalid Accesskey')
-        # pass
+            # pass
 
 
 class UserSecretkeyAuthentication(authentication.BaseAuthentication):
@@ -32,9 +32,13 @@ class UserSecretkeyAuthentication(authentication.BaseAuthentication):
     def authenticate(self, request):
         # implement your logic here
         if not request.META.get('HTTP_X_SECRET_KEY'):
-            print(request.META)
+            # print(request.META)
+            # print(request.method)
+            if request.method == 'POST':
+                # print('hello')
+                raise exceptions.AuthenticationFailed('Authentication credentials were not provided.')
             return None
         user, auth = UserAccesskeyAuthentication().authenticate(request)
         if user.secretkey == request.META.get('HTTP_X_SECRET_KEY'):
             return user, 'secretkey'
-        raise exceptions.AuthenticationFailed('')
+        raise exceptions.AuthenticationFailed('Incorrect authentication credentials.')
