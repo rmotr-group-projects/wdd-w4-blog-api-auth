@@ -24,13 +24,25 @@ class UserViewSet(mixins.RetrieveModelMixin,
         # you will probably do some custom actions about the `password` here
         if request.auth != 'secretkey':
             raise exceptions.AuthenticationFailed()
+        user = User.objects.filter(username=request.user.username)
+        # print(request.POST)
+        # print(request.POST.dict())
+        # fields = {key: value for key, value in request.POST.items()}
+        # print(fields)
+        # print(user)
+        user.update(**request.POST.dict())
+        # user.first().save()
+        if 'password' in request.POST:
+            request.user.set_password(request.POST['password'])
+            request.user.save(update_fields=['password'])
         return Response()
-        pass
+        # pass
 
     def create(self, request, *args, **kwargs):
         # you will probably do some custom actions about the `password` here
         if request.auth != 'secretkey':
             raise exceptions.AuthenticationFailed()
+        # print(request.POST)
         User.objects.create_user(username=request.POST['username'], password=request.POST['password'],
                                  accesskey=request.POST['accesskey'], secretkey=request.POST['secretkey'])
         return Response(status=status.HTTP_201_CREATED)
