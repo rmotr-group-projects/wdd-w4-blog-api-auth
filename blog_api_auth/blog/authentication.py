@@ -10,7 +10,17 @@ class UserAccesskeyAuthentication(authentication.BaseAuthentication):
 
     def authenticate(self, request):
         # implement your logic here
-        pass
+        # import pdb; pdb.set_trace()
+        if not request.GET.get('accesskey'):
+            raise exceptions.AuthenticationFailed('Authentication credentials were not provided.')
+        authkey = request.GET['accesskey']
+        try:
+            validate_authkey(authkey)
+            user = User.objects.get(accesskey=authkey)
+            return user, None
+        except:
+            raise exceptions.AuthenticationFailed('Invalid Accesskey')
+        # pass
 
 
 class UserSecretkeyAuthentication(authentication.BaseAuthentication):

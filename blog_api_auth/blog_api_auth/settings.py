@@ -133,5 +133,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 100,
     'DEFAULT_AUTHENTICATION_CLASSES': (
         # configure the authentication classes properly
+        'blog.authentication.UserAccesskeyAuthentication',
+        'blog.authentication.UserSecretkeyAuthentication'
     ),
 }
