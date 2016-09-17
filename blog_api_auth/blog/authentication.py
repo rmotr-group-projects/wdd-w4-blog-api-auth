@@ -17,7 +17,7 @@ class UserAccesskeyAuthentication(authentication.BaseAuthentication):
         try:
             validate_authkey(authkey)
             user = User.objects.get(accesskey=authkey)
-            return user, None
+            return user, 'accesskey'
         except:
             raise exceptions.AuthenticationFailed('Invalid Accesskey')
         # pass
@@ -31,4 +31,10 @@ class UserSecretkeyAuthentication(authentication.BaseAuthentication):
 
     def authenticate(self, request):
         # implement your logic here
-        pass
+        if not request.META.get('HTTP_X_SECRET_KEY'):
+            print(request.META)
+            return None
+        user, auth = UserAccesskeyAuthentication().authenticate(request)
+        if user.secretkey == request.META.get('HTTP_X_SECRET_KEY'):
+            return user, 'secretkey'
+        raise exceptions.AuthenticationFailed('')
