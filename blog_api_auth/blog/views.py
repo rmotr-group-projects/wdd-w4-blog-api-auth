@@ -23,19 +23,22 @@ class UserViewSet(mixins.RetrieveModelMixin,
 
     def update(self, request, *args, **kwargs):
         # you will probably do some custom actions about the `password` here
-        payload = request.POST
+        payload = request.data
         if 'password' in payload:
             payload['password'] = make_password(payload['password'])
-        request.user.update(**payload)
+        for attr in payload:
+            setattr(request.user, attr, payload[attr])
+        # request.user.__dict__.update(**payload)
+        request.user.save()
         content = {'status': 'request was permitted'}
         return Response(content)
 
     def create(self, request, *args, **kwargs):
         # you will probably do some custom actions about the `password` here
-        payload = request.POST
+        payload = request.data
         if 'password' in payload:
             payload['password'] = make_password(payload['password'])
-        request.user.create(**payload)
+        User.objects.create(**payload)
         content = {'status': 'request was permitted'}
         return Response(content)
 
