@@ -31,14 +31,16 @@ class UserSecretkeyAuthentication(authentication.BaseAuthentication):
 
     def authenticate(self, request):
         # implement your logic here
+        # print(request.method)
         if not request.META.get('HTTP_X_SECRET_KEY'):
             # print(request.META)
             # print(request.method)
-            if request.method == 'POST':
+            if request.method == 'POST' or request.method == 'DELETE' or \
+                            request.method == 'PUT' or request.method == 'PATCH':
                 # print('hello')
                 raise exceptions.AuthenticationFailed('Authentication credentials were not provided.')
             return None
         user, auth = UserAccesskeyAuthentication().authenticate(request)
         if user.secretkey == request.META.get('HTTP_X_SECRET_KEY'):
             return user, 'secretkey'
-        raise exceptions.AuthenticationFailed('Incorrect authentication credentials.')
+        raise exceptions.AuthenticationFailed('Invalid Secretkey')
