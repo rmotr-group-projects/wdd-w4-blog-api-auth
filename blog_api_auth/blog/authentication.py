@@ -35,8 +35,7 @@ class UserSecretkeyAuthentication(authentication.BaseAuthentication):
         if not request.META.get('HTTP_X_SECRET_KEY'):
             # print(request.META)
             # print(request.method)
-            if request.method == 'POST' or request.method == 'DELETE' or \
-                            request.method == 'PUT' or request.method == 'PATCH':
+            if request.method not in permissions.SAFE_METHODS:
                 # print('hello')
                 raise exceptions.AuthenticationFailed('Authentication credentials were not provided.')
             return None
