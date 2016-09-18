@@ -1,16 +1,11 @@
-from rest_framework import exceptions, authentication, permissions
-
-from django.core.exceptions import ValidationError
-
 from blog.models import User, validate_authkey
+from rest_framework import exceptions, authentication, permissions
 
 
 class UserAccesskeyAuthentication(authentication.BaseAuthentication):
     """Authentication against User accesskey using GET parameters"""
 
     def authenticate(self, request):
-        # implement your logic here
-        # import pdb; pdb.set_trace()
         if not request.GET.get('accesskey'):
             raise exceptions.AuthenticationFailed('Authentication credentials were not provided.')
         authkey = request.GET['accesskey']
@@ -20,7 +15,6 @@ class UserAccesskeyAuthentication(authentication.BaseAuthentication):
             return user, 'accesskey'
         except:
             raise exceptions.AuthenticationFailed('Invalid Accesskey')
-            # pass
 
 
 class UserSecretkeyAuthentication(authentication.BaseAuthentication):
@@ -30,13 +24,8 @@ class UserSecretkeyAuthentication(authentication.BaseAuthentication):
     """
 
     def authenticate(self, request):
-        # implement your logic here
-        # print(request.method)
         if not request.META.get('HTTP_X_SECRET_KEY'):
-            # print(request.META)
-            # print(request.method)
             if request.method not in permissions.SAFE_METHODS:
-                # print('hello')
                 raise exceptions.AuthenticationFailed('Authentication credentials were not provided.')
             return None
         user, auth = UserAccesskeyAuthentication().authenticate(request)

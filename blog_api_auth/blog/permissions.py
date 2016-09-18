@@ -7,9 +7,4 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        # print(obj.users)
-        # print((obj))
-        # print((obj.users.all()))
-        # print(request.user in obj.users.all())
-        # print(request.user in obj.users)
         return request.user in obj.users.all()
