@@ -22,12 +22,24 @@ class UserViewSet(mixins.RetrieveModelMixin,
     ordering_fields = ('id',)
 
     def update(self, request, *args, **kwargs):
-        # you will probably do some custom actions about the `password` here
-        pass
+        request.data['password'] = make_password(request.data['password'])
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
-        # you will probably do some custom actions about the `password` here
-        pass
+        request.data['password'] = make_password(request.data['password'])
+        serializer = self.get_serializer(data=request.data)
+        # print(request.data)
+        # request.data['password'] = make_password(request.data['password'])
+        # print(request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class BlogViewSet(mixins.RetrieveModelMixin,

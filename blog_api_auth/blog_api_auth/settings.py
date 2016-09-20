@@ -132,6 +132,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 100,
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        # configure the authentication classes properly
+        'blog.authentication.UserAccesskeyAuthentication',
+        # 'blog.authentication.UserSecretkeyAuthentication',
     ),
 }
