@@ -22,25 +22,29 @@ class UserViewSet(mixins.RetrieveModelMixin,
     ordering_fields = ('id',)
 
     def update(self, request, *args, **kwargs):
-        # you will probably do some custom actions about the `password` here
-        payload = request.data
-        if 'password' in payload:
-            payload['password'] = make_password(payload['password'])
-        for attr in payload:
-            setattr(request.user, attr, payload[attr])
-        # request.user.__dict__.update(**payload)
-        request.user.save()
-        content = {'status': 'request was permitted'}
-        return Response(content)
+        '''
+        Updates a user instance, hashing the password, if it is updated.
+        '''
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        if 'password' in serializer.validated_data:
+            serializer.validated_data['password'] = make_password(serializer.validated_data['password'])
+        self.perform_update(serializer)
+        return Response(serializer.data)
+        
 
     def create(self, request, *args, **kwargs):
-        # you will probably do some custom actions about the `password` here
-        payload = request.data
-        if 'password' in payload:
-            payload['password'] = make_password(payload['password'])
-        User.objects.create(**payload)
-        content = {'status': 'request was permitted'}
-        return Response(content)
+        '''
+        Makes a new User instance, with a hashed password.
+        '''
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.validated_data['password'] = make_password(serializer.validated_data['password'])
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class BlogViewSet(mixins.RetrieveModelMixin,
