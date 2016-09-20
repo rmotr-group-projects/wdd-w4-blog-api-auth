@@ -68,4 +68,4 @@ class EntryViewSet(mixins.RetrieveModelMixin,
     filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     search_fields = ('headline',)
     ordering_fields = ('id',)
-    # configure the custom permission class here
+    permission_classes = (IsOwnerOrReadOnly,)
