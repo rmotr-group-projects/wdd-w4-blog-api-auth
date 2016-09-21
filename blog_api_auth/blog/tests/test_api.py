@@ -1,14 +1,13 @@
 from datetime import date
 
+from blog.models import User
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from blog.models import User
 from .fixtures import *
 
 
 class UserTestCase(APITestCase):
-
     def setUp(self):
         super(UserTestCase, self).setUp()
         self.user = User.objects.create_user(
@@ -371,7 +370,6 @@ class UserTestCase(APITestCase):
 
 
 class EntryTestCase(APITestCase):
-
     def setUp(self):
         super(EntryTestCase, self).setUp()
         self.blog = BlogFactory()
