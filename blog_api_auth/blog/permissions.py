@@ -1,11 +1,13 @@
 from rest_framework import permissions
 
+from .models import Entry
+
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
-    # implement your logic here
-    #exceptions.PermissionDenied or exceptions.NotAuthenticated
-    def has_permission(self, request, view):
-        pass 
-    
+    message = 'You do not have permission to perform this action.'
+        
     def has_object_permission(self, request, view, obj):
-        pass
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        else:
+            return request.user in obj.users.all()

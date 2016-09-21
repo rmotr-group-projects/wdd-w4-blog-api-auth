@@ -22,7 +22,8 @@ class UserViewSet(mixins.RetrieveModelMixin,
     ordering_fields = ('id',)
 
     def update(self, request, *args, **kwargs):
-        request.data['password'] = make_password(request.data['password'])
+        if 'password' in request.data:
+            request.data['password'] = make_password(request.data['password'])
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
@@ -33,9 +34,6 @@ class UserViewSet(mixins.RetrieveModelMixin,
     def create(self, request, *args, **kwargs):
         request.data['password'] = make_password(request.data['password'])
         serializer = self.get_serializer(data=request.data)
-        # print(request.data)
-        # request.data['password'] = make_password(request.data['password'])
-        # print(request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
@@ -62,10 +60,10 @@ class EntryViewSet(mixins.RetrieveModelMixin,
                    mixins.DestroyModelMixin,
                    mixins.ListModelMixin,
                    viewsets.GenericViewSet):
-
+    permission_classes = (IsOwnerOrReadOnly,)
     queryset = Entry.objects.all()
     serializer_class = EntrySerializer
     filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     search_fields = ('headline',)
     ordering_fields = ('id',)
-    permission_classes = (IsOwnerOrReadOnly,)
+    

@@ -136,10 +136,4 @@ REST_FRAMEWORK = {
         'blog.authentication.UserSecretkeyAuthentication',
         'blog.authentication.UserAccesskeyAuthentication',
     ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-        
-        # custom permission classes
-        'blog.permissions.IsOwnerOrReadOnly',
-)
 }
